@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/back"
+    android:layout_height="match_parent"
+
+    tools:context=".MainActivity2">
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_marginTop="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:text="Enter your name"/>
+    <EditText
+        android:id="@+id/name"
+        android:layout_marginTop="30dp"
+        android:layout_below="@id/tvName"
+        android:hint="Your name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+    <TextView
+        android:layout_below="@id/name"
+        android:id="@+id/tvlevel"
+        android:layout_marginTop="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:text="Choose difficulty level"/>
+    <Button
+        android:id="@+id/easy"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="90dp"
+        android:layout_below="@id/tvlevel"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="Easy"/>
+    <Button
+        android:id="@+id/medium"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="90dp"
+        android:layout_below="@id/easy"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="Medium"/>
+    <Button
+        android:id="@+id/diff"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="90dp"
+        android:layout_below="@id/medium"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:text="Difficult"/>
+</RelativeLayout>
