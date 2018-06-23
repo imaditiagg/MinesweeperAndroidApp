@@ -5,10 +5,13 @@
     <color name="colorAccent">#FF4081</color>
     <color name="mycolor"> #ffbb99</color>
     <color name="mycolor2"> #999999</color>
-
+    <color name="orange">#ff3300</color>
     <color name="mycolor3">#ffdd99</color>
     <color name="red">#e60000</color>
     <color name="blue">#000066</color>
     <color name="green">#008000</color>
     <color name="purple">#4d004d</color>
+    <color name="black">#000000</color>
+    <color name="marron">#b30000</color>
+    <color name="skyBlue">#80b3ff</color>
 </resources>

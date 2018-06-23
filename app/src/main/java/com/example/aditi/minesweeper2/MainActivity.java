@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView tv,timerview;
     private CountDownTimer countDownTimer;
     private long timeLeftInMillisec= 600000;
-    boolean timerRunning;
+    boolean timerRunning=false;
 
 
     private LinearLayout rootLayout;
@@ -70,15 +70,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         board = new MineButton[m][n];
         rootLayout.removeAllViews();
         LinearLayout ll =new LinearLayout(this);
+        ll.setBackground(getResources().getDrawable(R.drawable.timer_bg));
         ImgButton = new ImageButton(this);
         ImgButton.setBackground(getResources().getDrawable(R.drawable.smile));
-        LinearLayout.LayoutParams l = new LinearLayout.LayoutParams(200, 120);
+        LinearLayout.LayoutParams l = new LinearLayout.LayoutParams(0, 120,1);
 
         ImgButton.setLayoutParams(l);
         ImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 areMinesSet=false;
+                stopTimer();
                 setUpBoard();
 
             }
@@ -86,8 +88,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         tv=new TextView(this);
+
         tv.setText(" GoodLuck " +intent.getStringExtra(MainActivity2.NAME));
-        LinearLayout.LayoutParams l2 = new LinearLayout.LayoutParams(430, 120);
+    //    tv.setTextColor(getResources().getColor(R.color.red));
+        LinearLayout.LayoutParams l2 = new LinearLayout.LayoutParams(0, 120,2);
 
         tv.setLayoutParams(l2);
         tv.setTextSize(15);
@@ -95,7 +99,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ll.addView(ImgButton);
 
         timerview =new TextView(this);
+        LinearLayout.LayoutParams l3 = new LinearLayout.LayoutParams(0, 120,2);
 
+        timerview.setLayoutParams(l3);
+        timerview.setGravity(Gravity.END);
+
+        ll.addView(timerview);
 
         rootLayout.addView(ll);
 
@@ -128,6 +137,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
+        startStop();
+
+
+    }
+
+    public void startStop()
+    {
+        if(timerRunning)
+            stopTimer();
+        else
+            startTimer();
+    }
+
+    public void stopTimer(){
+        countDownTimer.cancel();
+        timeLeftInMillisec=600000; //restart the timeleft
+        timerRunning=false;
+
+    }
+    public void startTimer(){
+        countDownTimer =new CountDownTimer(timeLeftInMillisec,1000) {
+            @Override
+            public void onTick(long l) {
+                timeLeftInMillisec=l;
+                updateTimer();
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        }.start();
+        timerRunning=true;
+    }
+
+    public void updateTimer(){
+        int min = (int) timeLeftInMillisec/60000;
+        int sec =(int) timeLeftInMillisec%60000/1000;
+        String timeleft;
+        timeleft=""+min;
+        timeleft+=":";
+        if(sec<10) timeleft+="0";
+        timeleft+=sec;
+        timerview.setText(timeleft);
+        timerview.setTextSize(30);
+        timerview.setTextColor(getResources().getColor(R.color.marron));
 
     }
 
@@ -241,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
            // Toast.makeText(MainActivity.this, "long click", Toast.LENGTH_SHORT).show();
             button.setText("F");
             button.flagged = true;
+            button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
             return true;
         }
         return false;
@@ -257,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize-10);
             currentStatus=LOST;
             button.setBackgroundColor(getResources().getColor(R.color.red));
+            stopTimer();
             Toast.makeText(this, "Oops Game over.. You lost !!", Toast.LENGTH_SHORT).show();
         }
         //if it is numbered block
@@ -274,6 +331,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 button.setTextColor(getResources().getColor(R.color.green));
             else if(button.value==4)
                 button.setTextColor(getResources().getColor(R.color.purple));
+            else if(button.value==5)
+                button.setTextColor(getResources().getColor(R.color.orange));
 
         }
         //if it is blank
@@ -315,6 +374,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     button.setTextColor(getResources().getColor(R.color.green));
                 else if(button.value==4)
                     button.setTextColor(getResources().getColor(R.color.purple));
+                else if(button.value==5)
+                    button.setTextColor(getResources().getColor(R.color.orange));
                 return;
             } else {
 
@@ -336,6 +397,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         public void checkGameStatus(){
+        if(timerview.getText().toString().equals("0:00")) {
+            Toast.makeText(this, "Oops Time Over..You Lost !! ", Toast.LENGTH_SHORT).show();
+            currentStatus=LOST;
+        }
+
         for(int i=0;i<m;i++){
             for (int j=0;j<n;j++){
                 if(board[i][j].value>0 && board[i][j].reveal==false)
@@ -345,6 +411,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //won
             currentStatus=PLAYER_WON;
+            stopTimer();
             Toast.makeText(this,"Congrats..You Won !! ",Toast.LENGTH_SHORT).show();
         }
 
