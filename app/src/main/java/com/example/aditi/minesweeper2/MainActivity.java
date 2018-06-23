@@ -1,10 +1,12 @@
 package com.example.aditi.minesweeper2;
 
 import android.content.Intent;
+import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -24,7 +26,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int textSize;
 
     ImageButton ImgButton;
-    TextView tv;
+    TextView tv,timerview;
+    private CountDownTimer countDownTimer;
+    private long timeLeftInMillisec= 600000;
+    boolean timerRunning;
+
+
     private LinearLayout rootLayout;
     private int m;//number of rows
     private int n; //number of columns
@@ -62,22 +69,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         rows = new ArrayList<>();
         board = new MineButton[m][n];
         rootLayout.removeAllViews();
+        LinearLayout ll =new LinearLayout(this);
         ImgButton = new ImageButton(this);
         ImgButton.setBackground(getResources().getDrawable(R.drawable.smile));
-        LinearLayout.LayoutParams l = new LinearLayout.LayoutParams(180, 120);
+        LinearLayout.LayoutParams l = new LinearLayout.LayoutParams(200, 120);
+
         ImgButton.setLayoutParams(l);
         ImgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setUpBoard();
                 areMinesSet=false;
+                setUpBoard();
+
             }
         }); //reset
-        rootLayout.addView(ImgButton);
+
 
         tv=new TextView(this);
-        tv.setText("GoodLuck " +intent.getStringExtra(MainActivity2.NAME));
-        rootLayout.addView(tv);
+        tv.setText(" GoodLuck " +intent.getStringExtra(MainActivity2.NAME));
+        LinearLayout.LayoutParams l2 = new LinearLayout.LayoutParams(430, 120);
+
+        tv.setLayoutParams(l2);
+        tv.setTextSize(15);
+        ll.addView(tv);
+        ll.addView(ImgButton);
+
+        timerview =new TextView(this);
+
+
+        rootLayout.addView(ll);
 
         for (int i = 0; i < m; i++) {
 
@@ -122,13 +142,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setMines(rowClicked, colClicked);
                 areMinesSet = true;
              //    revealall();
-                Toast.makeText(MainActivity.this, "mines are set", Toast.LENGTH_SHORT).show();
-
-
+             //   Toast.makeText(MainActivity.this, "mines are set", Toast.LENGTH_SHORT).show();
             }
-
-            //  Toast.makeText(this,"Not my first click",Toast.LENGTH_SHORT).show();
-           uncover(rowClicked, colClicked);
+            uncover(rowClicked, colClicked);
             checkGameStatus();
         }
     }
@@ -136,27 +152,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setMines(int curRow,int curCol) {
         if(m==8 && n==8) {
             noOfMines = 10;
-            textSize=40;
+            textSize=45;
         }
-        else if(m==12&& n==12) {
+        else if(m==11&& n==11) {
+            noOfMines = 15;
+            textSize=42;
+        }
+        else if(m==13 &&n==13) {
             noOfMines = 20;
-            textSize=35;
-        }
-        else if(m==15 &&n==15) {
-            noOfMines = 30;
-            textSize=10;
+            textSize=30;
         }
         Random rand = new Random();
         int randCol, randRow;
 
         int count = 0;
+        // don't set mine on currrow, currcol and it's neighbours
+        for(int i=0;i<8;i++)
+        {
+            int a = curRow+x[i];
+            int b=curCol+y[i];
+            if(a>=0 && a<m && b>0 && b<n) {
+                MineButton btn = board[a][b];
+                btn.can_set_mines = false;
+            }
+
+        }
 
         while (count < noOfMines) {
             randRow = rand.nextInt(m - 1);
             randCol = rand.nextInt(n - 1);
             if(randRow != curRow || randCol != curCol) {
             MineButton button = board[randRow][randCol];
-                if (!button.hasMine()) {
+                if (!button.hasMine() && button.can_set_mines) {
                     button.value= -1;
                     count++;//mineset
 
@@ -211,13 +238,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onLongClick(View view) {
         if(currentStatus==INCOMPLETE) {
             MineButton button = (MineButton) view;
-            Toast.makeText(MainActivity.this, "long click", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(MainActivity.this, "long click", Toast.LENGTH_SHORT).show();
             button.setText("F");
             button.flagged = true;
             return true;
         }
         return false;
     }
+
 
     public void uncover(int row, int col) {
 
@@ -226,8 +254,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //if it has mine
         if (button.value == -1) {
             button.setText("M");
-            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, 30);
+            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize-10);
             currentStatus=LOST;
+            button.setBackgroundColor(getResources().getColor(R.color.red));
             Toast.makeText(this, "Oops Game over.. You lost !!", Toast.LENGTH_SHORT).show();
         }
         //if it is numbered block
@@ -237,17 +266,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize);
             button.setEnabled(false);
             button.reveal = true;
+            if(button.value==1)
+                button.setTextColor(getResources().getColor(R.color.red));
+            else if(button.value==2)
+                button.setTextColor(getResources().getColor(R.color.blue));
+            else if(button.value==3)
+                button.setTextColor(getResources().getColor(R.color.green));
+            else if(button.value==4)
+                button.setTextColor(getResources().getColor(R.color.purple));
+
         }
         //if it is blank
         else if (button.value == 0) {
             //uncover
            // Toast.makeText(this, "Blank Button clicked", Toast.LENGTH_SHORT).show();
+            button.reveal=true;
             button.setBackgroundColor(getResources().getColor(R.color.mycolor2));
             button.setEnabled(false);
             for (int i = 0; i < 8; i++) {
-                if ((row + x[i] > 0 && row + x[i] < m && col + y[i] > 0 && col + y[i] < n)) {
+                if ((row + x[i] >= 0 && row + x[i] < m && col + y[i] >= 0 && col + y[i] < n)) {
                     MineButton btn = board[row + x[i]][col + y[i]];
-                    if (btn.value != -1 && button.reveal == false){//if it has no mine and not revealed yet
+                    if (btn.value != -1 && btn.reveal == false && btn.flagged==false){//if it has no mine and not revealed yet
                         btn.setBackgroundColor(getResources().getColor(R.color.mycolor2));
                         btn.setEnabled(false);
                         uncover2(row + x[i], col + y[i]);
@@ -261,76 +300,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void uncover2(int row, int col) {
 
         MineButton button = board[row][col];
-
-        if (button.value > 0 && button.reveal == false) {
-            button.setText(String.valueOf(button.value));
-            button.setBackgroundColor(getResources().getColor(R.color.mycolor2));
-            button.setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize);
-            button.setEnabled(false);
-            button.reveal = true;
-            return;
-        } else {
-
-
-            for (int i = 0; i < 8; i++) {
-                if ((row + x[i] >= 0 && row + x[i] < m && col + y[i] >= 0 && col + y[i] < n)) {
-                    MineButton btn = board[row + x[i]][col + y[i]];
-                    if (btn.value != -1 && button.reveal == false) {
-                        btn.setBackgroundColor(getResources().getColor(R.color.mycolor2));
-                        btn.setEnabled(false);
-                        uncover3(row + x[i], col + y[i]);
-
-
-                    }
-                }
-            }
-        }
-    }
-
-
-
-    public void uncover3(int row,int col)
-        {
-            MineButton button =board[row][col];
-
-            if(button.value>0 && button.reveal==false)
-            {
+        if((button.reveal ==false) && (button.flagged==false)) {
+            if (button.value > 0) {
                 button.setText(String.valueOf(button.value));
                 button.setBackgroundColor(getResources().getColor(R.color.mycolor2));
-                button.setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize);
+                button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
                 button.setEnabled(false);
-                button.reveal=true;
+                button.reveal = true;
+                if(button.value==1)
+                    button.setTextColor(getResources().getColor(R.color.red));
+                else if(button.value==2)
+                    button.setTextColor(getResources().getColor(R.color.blue));
+                else if(button.value==3)
+                    button.setTextColor(getResources().getColor(R.color.green));
+                else if(button.value==4)
+                    button.setTextColor(getResources().getColor(R.color.purple));
                 return;
-            }
-            else{
+            } else {
 
-                for(int i=0;i<8;i++) {
-                    if((row+x[i]>=0 && row+x[i]<m && col+y[i]>=0 && col+y[i]<n)){
-                        MineButton btn= board[row+x[i]][col+y[i]];
-                        if(btn.value!=-1 && button.reveal==false) {
+                button.reveal = true;
+                for (int i = 0; i < 8; i++) {
+                    if ((row + x[i] >= 0 && row + x[i] < m && col + y[i] >= 0 && col + y[i] < n)) {
+                        MineButton btn = board[row + x[i]][col + y[i]];
+                        if (btn.value != -1 && btn.reveal == false && btn.flagged==false) {
                             btn.setBackgroundColor(getResources().getColor(R.color.mycolor2));
                             btn.setEnabled(false);
-                            uncover4(row + x[i], col + y[i]);
+                            uncover2(row + x[i], col + y[i]);
+
 
                         }
                     }
                 }
             }
-        }
+        }}
 
-        public void uncover4(int row,int col){
-            MineButton button =board[row][col];
-
-            if(button.value>0 && button.reveal==false)
-            {
-                button.setText(String.valueOf(button.value));
-                button.setBackgroundColor(getResources().getColor(R.color.mycolor2));
-                button.setTextSize(TypedValue.COMPLEX_UNIT_PX,textSize);
-                button.setEnabled(false);
-                button.reveal=true;
-                return;
-            }
-        }
 
         public void checkGameStatus(){
         for(int i=0;i<m;i++){

@@ -40,12 +40,12 @@ public class MainActivity2 extends AppCompatActivity implements View.OnClickList
             n=8;
         }
         if(id == R.id.medium) {
-            m=12;
-            n=12;
+            m=11;
+            n=11;
         }
         if(id == R.id.diff) {
-            m=15;
-            n=15;
+            m=13;
+            n=13;
         }
         Intent intent = new Intent(this,MainActivity.class);
         intent.putExtra(M,m);

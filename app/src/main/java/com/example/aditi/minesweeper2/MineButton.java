@@ -11,6 +11,7 @@ public class MineButton extends AppCompatButton{
      int value=0;
      boolean reveal=false;
      boolean flagged=false;
+     boolean can_set_mines=true;
       public MineButton(Context context) {
         super(context);
     }
