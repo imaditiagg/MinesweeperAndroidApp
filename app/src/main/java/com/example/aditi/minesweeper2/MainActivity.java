@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         timerview =new TextView(this);
         LinearLayout.LayoutParams l3 = new LinearLayout.LayoutParams(0, 120,2);
-
+      //  updateTimer();
         timerview.setLayoutParams(l3);
         timerview.setGravity(Gravity.END);
 
@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        startStop();
+
 
 
     }
@@ -196,8 +196,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (!areMinesSet) { //if mines are not set i.e it's a first click
                 setMines(rowClicked, colClicked);
                 areMinesSet = true;
+                startStop();
              //    revealall();
-             //   Toast.makeText(MainActivity.this, "mines are set", Toast.LENGTH_SHORT).show();
+             //    Toast.makeText(MainActivity.this, "mines are set", Toast.LENGTH_SHORT).show();
             }
             uncover(rowClicked, colClicked);
             checkGameStatus();
@@ -207,11 +208,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setMines(int curRow,int curCol) {
         if(m==8 && n==8) {
             noOfMines = 10;
-            textSize=45;
+            textSize=48;
         }
         else if(m==11&& n==11) {
             noOfMines = 15;
-            textSize=42;
+            textSize=44;
         }
         else if(m==13 &&n==13) {
             noOfMines = 20;
@@ -313,8 +314,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize-10);
             currentStatus=LOST;
             button.setBackgroundColor(getResources().getColor(R.color.red));
+            revealAllMines();
             stopTimer();
-            Toast.makeText(this, "Oops Game over.. You lost !!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Oops Game over.. You lost !!", Toast.LENGTH_LONG).show();
         }
         //if it is numbered block
         else if (button.value > 0) {
@@ -339,6 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         else if (button.value == 0) {
             //uncover
            // Toast.makeText(this, "Blank Button clicked", Toast.LENGTH_SHORT).show();
+            button.setText("");
             button.reveal=true;
             button.setBackgroundColor(getResources().getColor(R.color.mycolor2));
             button.setEnabled(false);
@@ -378,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     button.setTextColor(getResources().getColor(R.color.orange));
                 return;
             } else {
-
+                button.setText("");
                 button.reveal = true;
                 for (int i = 0; i < 8; i++) {
                     if ((row + x[i] >= 0 && row + x[i] < m && col + y[i] >= 0 && col + y[i] < n)) {
@@ -398,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         public void checkGameStatus(){
         if(timerview.getText().toString().equals("0:00")) {
-            Toast.makeText(this, "Oops Time Over..You Lost !! ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Oops Time Over..You Lost !! ", Toast.LENGTH_LONG).show();
             currentStatus=LOST;
         }
 
@@ -412,7 +415,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //won
             currentStatus=PLAYER_WON;
             stopTimer();
-            Toast.makeText(this,"Congrats..You Won !! ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Congrats..You Won !! ",Toast.LENGTH_LONG).show();
+        }
+
+        public void revealAllMines()
+        {
+            for(int i=0;i<m;i++)
+                for(int j=0;j<n;j++)
+                {
+                    MineButton btn = board[i][j];
+                    if(btn.value==-1)
+                    {
+                        btn.setText("M");
+                        btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize-10);
+                        btn.setBackgroundColor(getResources().getColor(R.color.red));
+                    }
+                }
         }
 
     }
