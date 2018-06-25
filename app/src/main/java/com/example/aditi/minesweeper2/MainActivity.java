@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int noOfMines=0;
     private int[] x = {-1, -1, -1, 0, 0, +1, +1, +1};
     private int[] y = {-1, 0, +1, -1, +1, -1, 0, +1};
-    static int count = 4;
 
 
     @Override
@@ -90,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tv=new TextView(this);
 
         tv.setText(" GoodLuck " +intent.getStringExtra(MainActivity2.NAME));
-    //    tv.setTextColor(getResources().getColor(R.color.red));
         LinearLayout.LayoutParams l2 = new LinearLayout.LayoutParams(0, 120,2);
 
         tv.setLayoutParams(l2);
@@ -100,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         timerview =new TextView(this);
         LinearLayout.LayoutParams l3 = new LinearLayout.LayoutParams(0, 120,2);
-      //  updateTimer();
         timerview.setLayoutParams(l3);
         timerview.setGravity(Gravity.END);
 
@@ -350,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     MineButton btn = board[row + x[i]][col + y[i]];
                     if (btn.value != -1 && btn.reveal == false && btn.flagged==false){//if it has no mine and not revealed yet
                         btn.setBackgroundColor(getResources().getColor(R.color.mycolor2));
-                        btn.setEnabled(false);
+                       // btn.setEnabled(false);
                         uncover2(row + x[i], col + y[i]);
                 }}
             }
@@ -383,12 +380,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 button.setText("");
                 button.reveal = true;
+                button.setBackgroundColor(getResources().getColor(R.color.mycolor2));
+                button.setEnabled(false);
                 for (int i = 0; i < 8; i++) {
                     if ((row + x[i] >= 0 && row + x[i] < m && col + y[i] >= 0 && col + y[i] < n)) {
                         MineButton btn = board[row + x[i]][col + y[i]];
                         if (btn.value != -1 && btn.reveal == false && btn.flagged==false) {
-                            btn.setBackgroundColor(getResources().getColor(R.color.mycolor2));
-                            btn.setEnabled(false);
+
                             uncover2(row + x[i], col + y[i]);
 
 
