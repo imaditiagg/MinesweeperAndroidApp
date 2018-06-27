@@ -205,11 +205,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void setMines(int curRow,int curCol) {
         if(m==8 && n==8) {
             noOfMines = 10;
-            textSize=48;
+            textSize=55;
         }
         else if(m==11&& n==11) {
             noOfMines = 15;
-            textSize=44;
+            textSize=48;
         }
         else if(m==13 &&n==13) {
             noOfMines = 20;
@@ -292,9 +292,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(currentStatus==INCOMPLETE) {
             MineButton button = (MineButton) view;
            // Toast.makeText(MainActivity.this, "long click", Toast.LENGTH_SHORT).show();
-            button.setText("F");
             button.flagged = true;
-            button.setBackgroundColor(getResources().getColor(R.color.skyBlue));
+            button.setBackground(getResources().getDrawable(R.drawable.download));
             return true;
         }
         return false;
@@ -307,10 +306,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //if it has mine
         if (button.value == -1) {
-            button.setText("M");
-            button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize-10);
             currentStatus=LOST;
-            button.setBackgroundColor(getResources().getColor(R.color.red));
+            button.setBackground(getResources().getDrawable(R.drawable.unnamed));
             revealAllMines();
             stopTimer();
             Toast.makeText(this, "Oops Game over.. You lost !!", Toast.LENGTH_LONG).show();
@@ -424,9 +421,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     MineButton btn = board[i][j];
                     if(btn.value==-1)
                     {
-                        btn.setText("M");
-                        btn.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize-10);
-                        btn.setBackgroundColor(getResources().getColor(R.color.red));
+                        btn.setBackground(getResources().getDrawable(R.drawable.unnamed));
                     }
                 }
         }

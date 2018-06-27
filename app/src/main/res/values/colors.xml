@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="mycolor"> #ffbb99</color>
-    <color name="mycolor2"> #999999</color>
+    <color name="mycolor2">#999999</color>
     <color name="orange">#ff3300</color>
     <color name="mycolor3">#ffdd99</color>
     <color name="red">#e60000</color>
@@ -14,4 +14,5 @@
     <color name="black">#000000</color>
     <color name="marron">#b30000</color>
     <color name="skyBlue">#80b3ff</color>
+    <color name="grey">#999999</color>
 </resources>
